@@ -193,8 +193,9 @@ function GameField:Clear()
 			end
 		end
 		if full == true then
-			local list = {0,0,0,0,0,0,0,0,0,0}
-			table.remove(grid, i+1)
+			local list = {}
+			for i=1, width do table.insert(list, 0) end
+			table.remove(grid, i)
 			table.insert(grid, 1, list)
 		end
 	end
@@ -203,14 +204,14 @@ function GameField:drawPassive()
 	for i=1, width do
 		for j=1, height do
 			if grid[j][i] == 1 then
-				love.graphics.rectangle('fill' ,First_x + edge*(i-1), Field.y + edge*(j-1), edge, edge)
+				love.graphics.rectangle('fill' ,First_x + edge*(i-1), Field.y + edge*(j-1), edge-1, edge-1)
 			end
 		end
 	end
 end
 function GameField:drawActive()
 	for i=1, 4 do
-		love.graphics.rectangle('fill' ,First_x + edge*(active_brick[i][1]-1), Field.y + edge*(active_brick[i][2]-1), edge, edge)
+		love.graphics.rectangle('fill' ,First_x + edge*(active_brick[i][1]-1), Field.y + edge*(active_brick[i][2]-1), edge-1, edge-1)
 	end
 end
 
