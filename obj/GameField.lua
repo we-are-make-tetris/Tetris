@@ -1,5 +1,9 @@
 local GameField = Object:extend()
 local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
+<<<<<<< HEAD
+local over = love.graphics.newText(OverFont, 'Вы морально унижены!')
+
+=======
 local over = {
 	text = love.graphics.newText(OverFont, 'Вы морально унижены!'),
 	draw = false
@@ -7,6 +11,7 @@ local over = {
 local game_over_window = {
 	color = {0, 0, 0, 0}
 }
+>>>>>>> 3ab27a1c79a1c088f0bdd7049e3960be433fc632
 function GameField:makePassive(t)
 	for i=1, 4 do
 		grid[t[i][2]][t[i][1]]=1
@@ -19,36 +24,36 @@ local types = {
 }
 local figures = {
 	left_zed = {
-		{{2,1}, {2,2}, {1,2}, {1,3}}, -- Up
-		{{1,1}, {2,1}, {2,2}, {3,2}} -- Left
+		{{2,1},{2,2},{1,2},{1,3}}, -- Up
+		{{1,1},{2,1},{2,2},{3,2}} -- Left
 	},
 	right_zed = {
-		{{1,1}, {1,2}, {2,2}, {2,3}}, -- Up
-		{{1,2}, {2,2}, {2,1}, {3,1}} -- Left
+		{{1,1},{1,2},{2,2},{2,3}}, -- Up
+		{{2,1},{1,2},{3,1},{2,2}} -- Left
 	},
 	T = {
-		{{2,1},{1,2},{2,3},{2,2}},  --left
-		{{1,2},{2,1},{3,2},{2,2}}, --down
-		{{2,1},{2,2},{2,3},{3,2}}, --right
+		{{2,1},{1,2},{2,2},{2,3}},  --left
+		{{2,1},{1,2},{3,2},{2,2}}, --down
+		{{2,1},{2,2},{3,2},{2,3}}, --right
 		{{1,1},{2,1},{3,1},{2,2}} --up
 	},
 	cube = {
 		{{1,1},{1,2},{2,1},{2,2}}
 	},
 	left_ugol = {
-		{{1,2},{2,2},{3,2},{3,1}},
+		{{3,1},{1,2},{2,2},{3,2}},
 		{{2,1},{2,2},{2,3},{3,3}},
-		{{1,3},{1,2},{2,2},{3,2}},
+		{{2,2},{1,2},{3,2},{1,3}},
 		{{1,1},{2,1},{2,2},{2,3}}
 	},
 	right_ugol = {
-		{{3,3},{1,2},{2,2},{3,2}},
-		{{1,3},{2,1},{2,2},{2,3}},
+		{{1,2},{2,2},{3,2},{3,3}},
+		{{2,1},{1,3},{2,2},{2,3}},
 		{{1,1},{1,2},{2,2},{3,2}},
 		{{3,1},{2,1},{2,2},{2,3}}
 	},
 	palka = {
-		{{2,4},{2,3},{2,2},{2,1}},
+		{{2,1},{2,3},{2,2},{2,4}},
 		{{1,3},{2,3},{3,3},{4,3}}
 	}
 }
@@ -211,7 +216,7 @@ function GameField:MoveActive()
 	end
 end
 function GameField:Clear()
-	for i=1, height do
+	for i=active_brick[1][2], active_brick[4][2] do
 		full = true
 		for j=1, width do
 			if grid[i][j] == 0 then
