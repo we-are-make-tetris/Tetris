@@ -4,6 +4,7 @@ function GameField:makePassive(t)
 	for i=1, 4 do
 		grid[t[i][2]][t[i][1]]=1
 	end
+	GameField:Clear()
 end
 
 local types = {
@@ -216,7 +217,6 @@ end
 
 function GameField:update(dt)
 	GameField:MoveActive()
-	GameField:Clear()
 end
 
 function GameField:draw()
