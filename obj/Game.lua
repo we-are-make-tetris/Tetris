@@ -1,7 +1,7 @@
 local Game = Object:extend()
 local game_field = require('obj/gameField') 
 
-width = 10
+width = 11
 height = 24
 
 function Game:new()
