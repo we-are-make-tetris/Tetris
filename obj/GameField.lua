@@ -94,7 +94,7 @@ function GameField:new()
 end
 
 
-speed = 0.5         
+speed = 1.2 - DIFFICULTY/10        
 
 
 function copy(obj)
