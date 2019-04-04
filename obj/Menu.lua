@@ -3,6 +3,9 @@ local Main_menu = require('obj/Main_menu')
 local optionMenu= require('obj/Options')
 local startGame = require('obj/Game')
 
+local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
+
+
 function Menu:new()
 	changeMenu('mainMenu')
 	Main_menu:add('New game')
