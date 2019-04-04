@@ -1,7 +1,17 @@
 local GameField = Object:extend()
 local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
+<<<<<<< HEAD
 local over = love.graphics.newText(OverFont, 'Вы морально унижены!')
 
+=======
+local over = {
+	text = love.graphics.newText(OverFont, 'Вы морально унижены!'),
+	draw = false
+}
+local game_over_window = {
+	color = {1, 1, 1, 0}
+}
+>>>>>>> 3ab27a1c79a1c088f0bdd7049e3960be433fc632
 function GameField:makePassive(t)
 	for i=1, 4 do
 		grid[t[i][2]][t[i][1]]=1
@@ -60,26 +70,35 @@ function GameField:newFigure()
 	active_brick = copy(figures[typef][pos])
 	active_brick.pos = pos
 	active_brick.type = typef
-	timer:every(speed, function()
-		stop = false
-		temp = copy(active_brick)
-		for i=1, 4 do
-			if temp[i][2]+1 <= height and grid[temp[i][2]+1][temp[i][1]] == 0 then
-				temp[i][2] = temp[i][2]+1
-			else
-				stop = true
-				break
+	if not game_over then
+		timer:every(speed, function()
+			stop = false
+			temp = copy(active_brick)
+			for i=1, 4 do
+				if temp[i][2]+1 <= height and grid[temp[i][2]+1][temp[i][1]] == 0 then
+					temp[i][2] = temp[i][2]+1
+				else
+					stop = true
+					break
+				end
 			end
-		end
-		if stop == false then
-			active_brick = copy(temp)
-		else
-			GameField:makePassive(active_brick)
-			timer:after(speed,GameField:newFigure())
-			return false
-		end
+			if stop == false then
+				active_brick = copy(temp)
+			else
+				GameField:makePassive(active_brick)
+				timer:after(speed,GameField:newFigure())
+				return false
+			end
 
-	end)
+		end)
+	end
+end
+
+function game_over_check(ab)
+	temp = copy(ab)
+	for i = 1, 4 do
+		if grid[temp[i][2]][temp[i][1]] == 1 then gameOver() end
+	end
 end
 
 function GameField:new()
@@ -97,7 +116,7 @@ function GameField:new()
 end
 
 
-speed = 1.2 - DIFFICULTY/10        
+speed = 1.2 - DIFFICULTY/10
 
 
 function copy(obj)
@@ -207,10 +226,9 @@ function GameField:Clear()
 			end
 		end
 		if full == true then
-
 			local list = {}
 			for i=1, width do table.insert(list, 0) end
-			
+			local list = {0,0,0,0,0,0,0,0,0,0}
 			table.remove(grid, i)
 			table.insert(grid, 1, list)
 		end
@@ -231,15 +249,29 @@ function GameField:drawActive()
 	end
 end
 
+local game_over = nil
+
+function gameOver()
+	game_over = true
+	game_over_window.color[4] = 1
+end
+
 
 function GameField:update(dt)
-	GameField:MoveActive()
+	if not game_over then
+		GameField:MoveActive()
+	end
 end
 
 function GameField:draw()
-	love.graphics.draw(over)
+	love.graphics.rectangle('line', First_x, Field.y, Field.w, Field.h) 
+	love.graphics.rectangle('line', Second_x, Field.y, Field.w, Field.h)
 	GameField:drawActive()
 	GameField:drawPassive()
+	love.graphics.setColor(game_over_window.color)
+	love.graphics.rectangle('fill', 0, 0, w, h)
+	love.graphics.setColor({1, 1, 1, 1})
+	
 end
 
 return GameField
