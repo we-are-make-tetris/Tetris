@@ -30,8 +30,6 @@ function Game:draw()
 
 	GameField:draw()
 
-	love.graphics.rectangle('line', First_x, Field.y, Field.w, Field.h) 
-	love.graphics.rectangle('line', Second_x, Field.y, Field.w, Field.h)
 	--love.graphics.draw(nextText, 150, 675)
 end
 
