@@ -131,7 +131,7 @@ function GameField:MoveActive()
 		end
 		if stop == false then active_brick = copy(temp) end
 	end
-	if input:down('down', 0.08, 0.08) then
+	if input:down('down', 0.01, 0.01) then
 		temp = copy(active_brick)
 		stop = false
 		for i=1,4 do
@@ -160,9 +160,21 @@ function GameField:MoveActive()
 		stop = false
 		for i=1, 4 do
 			coor = temp[i]
-			if coor[1] < 1 or coor[1] > width or coor[2] > height or grid[coor[2]][coor[1]] == 1 then
+			if coor[2] > height or grid[coor[2]][coor[1]] == 1 then
 				stop = true
 				break
+			end
+			if coor[1] < 1 then
+				dif = 1 - coor[1]
+				for i=1, 4 do
+					temp[i][1] = temp[i][1] + dif
+				end
+				break
+			elseif coor[1] > width then
+				dif = coor[1] - width
+				for i=1, 4 do
+					temp[i][1] = temp[i][1] - dif
+				end
 			end
 		end
 		if stop == false then active_brick = copy(temp) end
@@ -193,12 +205,10 @@ function GameField:Clear()
 			end
 		end
 		if full == true then
-<<<<<<< HEAD
+
 			local list = {}
 			for i=1, width do table.insert(list, 0) end
-=======
-			local list = {0,0,0,0,0,0,0,0,0,0}
->>>>>>> 20980802efd3516bdabe270031a91606a70f7120
+			
 			table.remove(grid, i)
 			table.insert(grid, 1, list)
 		end
