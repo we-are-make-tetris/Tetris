@@ -5,7 +5,7 @@ local over = {
 	draw = false
 }
 local game_over_window = {
-	color = {1, 1, 1, 0}
+	color = {0, 0, 0, 0}
 }
 function GameField:makePassive(t)
 	for i=1, 4 do
@@ -65,34 +65,33 @@ function GameField:newFigure()
 	active_brick = copy(figures[typef][pos])
 	active_brick.pos = pos
 	active_brick.type = typef
-	if not game_over then
-		timer:every(speed, function()
-			stop = false
-			temp = copy(active_brick)
-			for i=1, 4 do
-				if temp[i][2]+1 <= height and grid[temp[i][2]+1][temp[i][1]] == 0 then
-					temp[i][2] = temp[i][2]+1
-				else
-					stop = true
-					break
-				end
-			end
-			if stop == false then
-				active_brick = copy(temp)
+	game_over_check(active_brick)
+	timer:every(speed, function()
+		stop = false
+		temp = copy(active_brick)
+		for i=1, 4 do
+			if temp[i][2]+1 <= height and grid[temp[i][2]+1][temp[i][1]] == 0 then
+				temp[i][2] = temp[i][2]+1
 			else
-				GameField:makePassive(active_brick)
-				timer:after(speed,GameField:newFigure())
-				return false
+				stop = true
+				break
 			end
+		end
+		if stop == false then
+			active_brick = copy(temp)
+		else
+			GameField:makePassive(active_brick)
+			if not game_over then timer:after(speed, function() GameField:newFigure() end) end
+			return false
+		end
 
-		end)
-	end
+	end)
 end
 
 function game_over_check(ab)
-	temp = copy(ab)
+	
 	for i = 1, 4 do
-		if grid[temp[i][2]][temp[i][1]] == 1 then gameOver() end
+		if grid[ab[i][2]][ab[i][1]] ~= 0 then gameOver() end
 	end
 end
 
@@ -244,11 +243,12 @@ function GameField:drawActive()
 	end
 end
 
-local game_over = nil
+local game_over = false
 
 function gameOver()
 	game_over = true
-	game_over_window.color[4] = 1
+	timer:tween(2, game_over_window.color, {0, 0, 0, 1}, 'in-out-linear')
+	timer:after(1, function() over.draw = true end)
 end
 
 
@@ -266,6 +266,7 @@ function GameField:draw()
 	love.graphics.setColor(game_over_window.color)
 	love.graphics.rectangle('fill', 0, 0, w, h)
 	love.graphics.setColor({1, 1, 1, 1})
+	if over.draw then love.graphics.draw(over.text) end
 	
 end
 
