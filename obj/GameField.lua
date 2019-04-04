@@ -95,7 +95,7 @@ function GameField:new()
 end
 
 
-speed = 0.5         
+speed = 1.2 - DIFFICULTY/10        
 
 
 function copy(obj)
@@ -193,8 +193,12 @@ function GameField:Clear()
 			end
 		end
 		if full == true then
+<<<<<<< HEAD
 			local list = {}
 			for i=1, width do table.insert(list, 0) end
+=======
+			local list = {0,0,0,0,0,0,0,0,0,0}
+>>>>>>> 20980802efd3516bdabe270031a91606a70f7120
 			table.remove(grid, i)
 			table.insert(grid, 1, list)
 		end
