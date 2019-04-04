@@ -194,7 +194,7 @@ function GameField:Clear()
 		end
 		if full == true then
 			local list = {0,0,0,0,0,0,0,0,0,0}
-			table.remove(grid, i+1)
+			table.remove(grid, i)
 			table.insert(grid, 1, list)
 		end
 	end
