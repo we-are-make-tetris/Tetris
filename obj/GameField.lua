@@ -1,4 +1,8 @@
 local GameField = Object:extend()
+local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
+local over = love.graphics.newText(OverFont, 'Вы морально унижены!')
+
+over:set({0, 0, 0}, 'Вы морально унижены!')
 
 function GameField:makePassive(t)
 	for i=1, 4 do
@@ -235,6 +239,7 @@ function GameField:update(dt)
 end
 
 function GameField:draw()
+	love.graphics.draw(over)
 	GameField:drawActive()
 	GameField:drawPassive()
 end
