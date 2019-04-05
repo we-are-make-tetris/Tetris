@@ -8,6 +8,7 @@ local over = {
 	text = love.graphics.newText(OverFont, 'Вас морально унизили'),
 	draw = false
 }
+
 local game_over_window = {
 	color = {0, 0, 0, 0}
 }
@@ -77,7 +78,8 @@ local figures = {
 ]]--
 function GameField:newFigure()
 
-	typef = types[love.math.random(1,#types)] -- тип фигуры(квадрат, палка и т.д.)
+	--typef = types[love.math.random(1,#types)] -- тип фигуры(квадрат, палка и т.д.)
+	typef = 'palka'
 	pos = love.math.random(1,#figures[typef]) -- положение(поворот, то как будет повернута фигура)
 
 	active_brick = copy(figures[typef][pos]) -- создание самой фигуры	
@@ -93,7 +95,7 @@ function GameField:newFigure()
 		for i=1, 4 do
 			if temp[i][2]+1 <= height and grid[temp[i][2]+1][temp[i][1]] == 0 then
 				temp[i][2] = temp[i][2]+1
-			else                      -- характер движения фигуры. Oна подает пока под ней не появится опора(другая "застывшая" фигура или земля(пол))
+			else                      -- характер движения фигуры. Oна пaдает пока под ней не появится опора(другая "застывшая" фигура или земля(пол))
 				stop = true
 				break
 			end

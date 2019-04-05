@@ -14,7 +14,6 @@ Menu = require('obj/Menu')
 Game = require('obj/Game')
 
 function love.load()
-	gotoRoom('Menu')
 
 	timer = Timer()
 	input = Input()
@@ -25,6 +24,9 @@ function love.load()
 	input:bind('right', 'right')
 	input:bind('escape', 'esc')
 	input:bind('space', 'space')
+
+
+	timer:after(0.01, function() gotoRoom('Menu') end)
 end
 function love.update(dt)
 	timer:update(dt)
