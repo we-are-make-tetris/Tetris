@@ -1,16 +1,27 @@
 local GameField = Object:extend()
 local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
+<<<<<<< HEAD
 
 local over = love.graphics.newText(OverFont, 'Вы морально унижены!')
+=======
+>>>>>>> d30a80107bdd189adecbf99f9e90f59b70f1d28c
 
 local over = {
-	text = love.graphics.newText(OverFont, 'Вы морально унижены!'),
+	text = love.graphics.newText(OverFont, 'Вас морально унизили'),
 	draw = false
 }
 local game_over_window = {
-	color = {1, 1, 1, 0}
+	color = {0, 0, 0, 0}
 }
 
+<<<<<<< HEAD
+=======
+speed = 1.2 - DIFFICULTY/10
+local game_over = false
+local in_game = true
+
+-- "омертвляет фигуру", делает пассивной.
+>>>>>>> d30a80107bdd189adecbf99f9e90f59b70f1d28c
 function GameField:makePassive(t)
 	for i=1, 4 do
 		grid[t[i][2]][t[i][1]]=1
@@ -64,39 +75,43 @@ local figures = {
   1 2 3 4
 ]]--
 function GameField:newFigure()
-	typef = types[love.math.random(1,#types)]
-	pos = love.math.random(1,#figures[typef])
-	active_brick = copy(figures[typef][pos])
-	active_brick.pos = pos
-	active_brick.type = typef
-	if not game_over then
-		timer:every(speed, function()
-			stop = false
-			temp = copy(active_brick)
-			for i=1, 4 do
-				if temp[i][2]+1 <= height and grid[temp[i][2]+1][temp[i][1]] == 0 then
-					temp[i][2] = temp[i][2]+1
-				else
-					stop = true
-					break
-				end
-			end
-			if stop == false then
-				active_brick = copy(temp)
-			else
-				GameField:makePassive(active_brick)
-				timer:after(speed,GameField:newFigure())
-				return false
-			end
 
-		end)
-	end
+	typef = types[love.math.random(1,#types)] -- тип фигуры(квадрат, палка и т.д.)
+	pos = love.math.random(1,#figures[typef]) -- положение(поворот, то как будет повернута фигура)
+
+	active_brick = copy(figures[typef][pos]) -- создание самой фигуры	
+	active_brick.pos = pos -- присваивание положения
+	active_brick.type = typef -- присваивание типа
+
+	game_over_check(active_brick) -- проверка на окончание игры (если фигура появляется внутри другой, значит игра окончена) 
+
+	timer:every(speed, function()
+		stop = false
+		temp = copy(active_brick)
+		for i=1, 4 do
+			if temp[i][2]+1 <= height and grid[temp[i][2]+1][temp[i][1]] == 0 then
+				temp[i][2] = temp[i][2]+1
+			else                      -- характер движения фигуры. Oна подает пока под ней не появится опора(другая "застывшая" фигура или земля(пол))
+				stop = true
+				break
+			end
+		end
+
+		if stop == false then
+			active_brick = copy(temp)
+		else
+			GameField:makePassive(active_brick)
+			if in_game then timer:after(speed, function()  GameField:newFigure() end ) end
+			return false
+		end
+
+	end)
 end
 
-function game_over_check(ab)
-	temp = copy(ab)
+-- проверка на окончание игры (если фигура появляется внутри другой, значит игра окончена) 
+function game_over_check(ab) 
 	for i = 1, 4 do
-		if grid[temp[i][2]][temp[i][1]] == 1 then gameOver() end
+		if grid[ab[i][2]][ab[i][1]] ~= 0 then gameOver() end
 	end
 end
 
@@ -113,10 +128,6 @@ function GameField:new()
 	end
 	GameField:newFigure()
 end
-
-
-speed = 1.2 - DIFFICULTY/10
-
 
 function copy(obj)
   	if type(obj) ~= 'table' then return obj end
@@ -215,8 +226,21 @@ function GameField:MoveActive()
 		GameField:makePassive(active_brick)
 	end
 end
+
+-- Эта функция определяет высшее и нижнее положение фигуры (для удаления готовых рядов)
+function brickPos(ab)
+	minn, maxx = 100, 0
+	for i = 1, 4 do
+		minn = math.min(ab[i][2], minn)
+		maxx = math.max(ab[i][2], maxx)
+	end
+	return {minn, maxx}
+end
+
+-- Эта функция очищает все заполненные слои, проверяя только те слои которые могла задеть нынешняя фигура
 function GameField:Clear()
-	for i=active_brick[1][2], active_brick[4][2] do
+	local tmp = brickPos(active_brick)
+	for i = tmp[1], tmp[2] do
 		full = true
 		for j=1, width do
 			if grid[i][j] == 0 then
@@ -226,8 +250,7 @@ function GameField:Clear()
 		end
 		if full == true then
 			local list = {}
-			for i=1, width do table.insert(list, 0) end
-			local list = {0,0,0,0,0,0,0,0,0,0}
+			for j=1, width do table.insert(list, 0) end
 			table.remove(grid, i)
 			table.insert(grid, 1, list)
 		end
@@ -248,16 +271,16 @@ function GameField:drawActive()
 	end
 end
 
-local game_over = nil
-
+-- эта функция заканчивает игру (splashscreen)
 function gameOver()
-	game_over = true
-	game_over_window.color[4] = 1
+	timer:tween(2, game_over_window.color, {0, 0, 0, 1}, 'in-out-linear') 
+	game_over, in_game = true, false
+	timer:after(1, function() over.draw = true end)
 end
 
 
 function GameField:update(dt)
-	if not game_over then
+	if in_game then
 		GameField:MoveActive()
 	end
 end
@@ -270,6 +293,7 @@ function GameField:draw()
 	love.graphics.setColor(game_over_window.color)
 	love.graphics.rectangle('fill', 0, 0, w, h)
 	love.graphics.setColor({1, 1, 1, 1})
+	if over.draw then love.graphics.draw(over.text) end
 	
 end
 
