@@ -82,6 +82,7 @@ function GameField:newFigure()
 	active_brick = copy(figures[typef][pos]) -- создание самой фигуры	
 	active_brick.pos = pos -- присваивание положения
 	active_brick.type = typef -- присваивание типа
+	active_brick.active = true
 
 	game_over_check(active_brick) -- проверка на окончание игры (если фигура появляется внутри другой, значит игра окончена) 
 
@@ -140,7 +141,7 @@ function GameField:MoveActive()
 		temp = copy(active_brick)
 		stop = false
 		for i=1,4 do
-			if temp[i][1]-1 <= 0 or grid[temp[i][2]][temp[i][1]-1] == 1 or grid[temp[i][2]][temp[i][1]]then
+			if temp[i][1]-1 <= 0 or grid[temp[i][2]][temp[i][1]-1] == 1 or not temp.active then
 				stop = true
 				break
 			end
@@ -154,7 +155,7 @@ function GameField:MoveActive()
 		temp = copy(active_brick)
 		stop = false
 		for i=1,4 do
-			if temp[i][1]+1 > width or grid[temp[i][2]][temp[i][1]+1] == 1 or grid[temp[i][2]][temp[i][1]] then
+			if temp[i][1]+1 > width or grid[temp[i][2]][temp[i][1]+1] == 1 or not temp.active then
 				stop = true
 				break
 			end
@@ -170,7 +171,7 @@ function GameField:MoveActive()
 		temp = copy(active_brick)
 		stop = false
 		for i=1,4 do
-			if temp[i][2]+1 > height or grid[temp[i][2]+1][temp[i][1]] == 1 then
+			if temp[i][2]+1 > height or grid[temp[i][2]+1][temp[i][1]] == 1 or not temp.active then
 				stop = true
 				break
 			end
