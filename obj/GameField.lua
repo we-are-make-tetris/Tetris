@@ -25,12 +25,13 @@ function GameField:makePassive(t)
 	for i=1, 4 do
 		grid[t[i][2]][t[i][1]]=1
 	end
+	t.active = false
 	GameField:Clear()
-
 end
 
 local types = {
-	'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 'palka'
+	--'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 
+	'palka'
 }
 local figures = {
 	left_zed = {
@@ -178,7 +179,8 @@ function GameField:MoveActive()
 			temp[i][2] = temp[i][2] + 1
 		end
 		if stop == false then active_brick = copy(temp)
-		else GameField:makePassive(active_brick) end
+		elseif temp.active then GameField:makePassive(active_brick)
+		else GameField:newFigure() end
 	end
 
 
