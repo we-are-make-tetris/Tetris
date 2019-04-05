@@ -1,10 +1,8 @@
 local GameField = Object:extend()
 local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
-<<<<<<< HEAD
+local ComboFont = love.graphics.newFont('fonts/logo.ttf', h/10)
 
-local over = love.graphics.newText(OverFont, 'Вы морально унижены!')
-=======
->>>>>>> d30a80107bdd189adecbf99f9e90f59b70f1d28c
+scoreText = love.graphics.newText(ComboFont, '0')
 
 local over = {
 	text = love.graphics.newText(OverFont, 'Вас морально унизили'),
@@ -14,19 +12,21 @@ local game_over_window = {
 	color = {0, 0, 0, 0}
 }
 
-<<<<<<< HEAD
-=======
-speed = 1.2 - DIFFICULTY/10
+
+speed = 0.5
+score = 0
+
 local game_over = false
 local in_game = true
 
 -- "омертвляет фигуру", делает пассивной.
->>>>>>> d30a80107bdd189adecbf99f9e90f59b70f1d28c
+
 function GameField:makePassive(t)
 	for i=1, 4 do
 		grid[t[i][2]][t[i][1]]=1
 	end
 	GameField:Clear()
+
 end
 
 local types = {
@@ -101,7 +101,7 @@ function GameField:newFigure()
 			active_brick = copy(temp)
 		else
 			GameField:makePassive(active_brick)
-			if in_game then timer:after(speed, function()  GameField:newFigure() end ) end
+			if in_game then GameField:newFigure() end
 			return false
 		end
 
@@ -118,8 +118,6 @@ end
 function GameField:new()
 	edge = Field.w/width
 	grid = {}
-	emptyline = {}
-	for i=1, width do table.insert(emptyline,0) end 
 	for i=1, height do
 		table.insert(grid,{})
 		for j=1, width do
@@ -142,7 +140,7 @@ function GameField:MoveActive()
 		temp = copy(active_brick)
 		stop = false
 		for i=1,4 do
-			if temp[i][1]-1 <= 0 or grid[temp[i][2]][temp[i][1]-1] == 1 then
+			if temp[i][1]-1 <= 0 or grid[temp[i][2]][temp[i][1]-1] == 1 or grid[temp[i][2]][temp[i][1]]then
 				stop = true
 				break
 			end
@@ -150,18 +148,24 @@ function GameField:MoveActive()
 		end
 		if stop == false then active_brick = copy(temp) end
 	end
+
+
 	if input:down('right', 0.1, 0.1) then
 		temp = copy(active_brick)
 		stop = false
 		for i=1,4 do
-			if temp[i][1]+1 > width or grid[temp[i][2]][temp[i][1]+1] == 1 then
+			if temp[i][1]+1 > width or grid[temp[i][2]][temp[i][1]+1] == 1 or grid[temp[i][2]][temp[i][1]] then
 				stop = true
 				break
 			end
 			temp[i][1] = temp[i][1] + 1
 		end
 		if stop == false then active_brick = copy(temp) end
+
 	end
+
+
+
 	if input:down('down', 0.01, 0.01) then
 		temp = copy(active_brick)
 		stop = false
@@ -172,8 +176,12 @@ function GameField:MoveActive()
 			end
 			temp[i][2] = temp[i][2] + 1
 		end
-		if stop == false then active_brick = copy(temp) end
+		if stop == false then active_brick = copy(temp)
+		else GameField:makePassive(active_brick) end
 	end
+
+
+
 	if input:down('up', 0.3, 0.3) then
 		temp = copy(active_brick)
 		for i=1, 4 do
@@ -210,6 +218,8 @@ function GameField:MoveActive()
 		end
 		if stop == false then active_brick = copy(temp) end
 	end 
+
+
 	if input:pressed('space') then
 		temp = copy(active_brick)
 		stop = false
@@ -225,22 +235,13 @@ function GameField:MoveActive()
 		end
 		GameField:makePassive(active_brick)
 	end
-end
 
--- Эта функция определяет высшее и нижнее положение фигуры (для удаления готовых рядов)
-function brickPos(ab)
-	minn, maxx = 100, 0
-	for i = 1, 4 do
-		minn = math.min(ab[i][2], minn)
-		maxx = math.max(ab[i][2], maxx)
-	end
-	return {minn, maxx}
 end
 
 -- Эта функция очищает все заполненные слои, проверяя только те слои которые могла задеть нынешняя фигура
+combo = false
 function GameField:Clear()
-	local tmp = brickPos(active_brick)
-	for i = tmp[1], tmp[2] do
+	for i = active_brick[1][2], active_brick[4][2] do
 		full = true
 		for j=1, width do
 			if grid[i][j] == 0 then
@@ -248,11 +249,13 @@ function GameField:Clear()
 				break
 			end
 		end
+		list = {}
+		for i=1, width do table.insert(list, 0) end
 		if full == true then
-			local list = {}
-			for j=1, width do table.insert(list, 0) end
 			table.remove(grid, i)
 			table.insert(grid, 1, list)
+			score = score + 10
+			scoreText = love.graphics.newText(ComboFont, tostring(score))
 		end
 	end
 end
@@ -266,8 +269,10 @@ function GameField:drawPassive()
 	end
 end
 function GameField:drawActive()
-	for i=1, 4 do
-		love.graphics.rectangle('fill' ,First_x + edge*(active_brick[i][1]-1), Field.y + edge*(active_brick[i][2]-1), edge-1, edge-1)
+	if active_brick then
+		for i=1, 4 do
+			love.graphics.rectangle('fill' ,First_x + edge*(active_brick[i][1]-1), Field.y + edge*(active_brick[i][2]-1), edge-1, edge-1)
+		end
 	end
 end
 
@@ -287,9 +292,9 @@ end
 
 function GameField:draw()
 	love.graphics.rectangle('line', First_x, Field.y, Field.w, Field.h) 
-	love.graphics.rectangle('line', Second_x, Field.y, Field.w, Field.h)
 	GameField:drawActive()
 	GameField:drawPassive()
+	love.graphics.draw(scoreText, First_x + Field.w + 20, Field.y + 100)
 	love.graphics.setColor(game_over_window.color)
 	love.graphics.rectangle('fill', 0, 0, w, h)
 	love.graphics.setColor({1, 1, 1, 1})
