@@ -8,6 +8,7 @@ local over = {
 	text = love.graphics.newText(OverFont, 'Вас морально унизили'),
 	draw = false
 }
+
 local game_over_window = {
 	color = {0, 0, 0, 0}
 }
@@ -26,7 +27,6 @@ function GameField:makePassive(t)
 		grid[t[i][2]][t[i][1]]=1
 	end
 	GameField:Clear()
-
 end
 
 local types = {
@@ -76,7 +76,8 @@ local figures = {
 ]]--
 function GameField:newFigure()
 
-	typef = types[love.math.random(1,#types)] -- тип фигуры(квадрат, палка и т.д.)
+	--typef = types[love.math.random(1,#types)] -- тип фигуры(квадрат, палка и т.д.)
+	typef = 'palka'
 	pos = love.math.random(1,#figures[typef]) -- положение(поворот, то как будет повернута фигура)
 
 	active_brick = copy(figures[typef][pos]) -- создание самой фигуры	
