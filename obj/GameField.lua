@@ -1,9 +1,8 @@
 local GameField = Object:extend()
 local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
-<<<<<<< HEAD
+
 local over = love.graphics.newText(OverFont, 'Вы морально унижены!')
 
-=======
 local over = {
 	text = love.graphics.newText(OverFont, 'Вы морально унижены!'),
 	draw = false
@@ -11,7 +10,7 @@ local over = {
 local game_over_window = {
 	color = {1, 1, 1, 0}
 }
->>>>>>> 3ab27a1c79a1c088f0bdd7049e3960be433fc632
+
 function GameField:makePassive(t)
 	for i=1, 4 do
 		grid[t[i][2]][t[i][1]]=1
