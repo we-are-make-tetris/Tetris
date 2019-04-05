@@ -39,6 +39,6 @@ function love.draw()
 	end
 end
 function gotoRoom(room)
-	if room == 'Menu' then currentRoom = Menu()
+	if room == 'One Player' then currentRoom = Menu()
 	elseif room == 'New game' then currentRoom = Game() end
 end

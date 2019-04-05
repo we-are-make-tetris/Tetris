@@ -1,18 +1,18 @@
 local Main_menu = Object:extend()
-local Game = require('obj/Game')
+self.Game = require('obj/Game')
 
-white = {1, 1, 1}
+self.white = {1, 1, 1}
 
-local List = {}
-local Listh = h/2
-local Listy = h/3
-local interval = 0
+self.List = {}
+self.Listh = h/2
+self.Listy = h/3
+self.interval = 0
 
-local scale = 2
+self.scale = 2
 
-local TetrisFont = love.graphics.newFont('fonts/logo.ttf', h/10)
-local MenuFont = love.graphics.newFont('fonts/logo.ttf', h/30)
-local ScaleFont = love.graphics.newFont('fonts/logo.ttf', MenuFont:getAscent()*scale)
+self.TetrisFont = love.graphics.newFont('fonts/logo.ttf', h/10)
+self.MenuFont = love.graphics.newFont('fonts/logo.ttf', h/30)
+self.ScaleFont = love.graphics.newFont('fonts/logo.ttf', MenuFont:getAscent()*scale)
 
 function Main_menu:add(name)
 	interval = Listh / #List
@@ -36,13 +36,13 @@ function Main_menu:add(name)
 end
 
 
-local logo = {
+self.logo = {
 	Logo = love.graphics.newText(TetrisFont, 'LOL Tetris from II LOL'),
 	y = h/5
 }
-logo.x = (w - logo.Logo:getWidth())/2
+self.logo.x = (w - logo.Logo:getWidth())/2
 
-local focus = 1
+self.focus = 1
 
 function Main_menu:new()
 	
@@ -51,9 +51,7 @@ end
 function Main_menu:update(dt)
 	List[focus].text:setFont(MenuFont)
 	if input:pressed('click') then
- 		if List[focus].room == 'New game' then
- 			gotoRoom(List[focus].room)
-		else changeMenu(List[focus].room) end
+		changeMenu(List[focus].room)
 	end
 
 	if input:down('down', 0.1) then

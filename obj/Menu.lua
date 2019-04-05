@@ -2,6 +2,7 @@ local Menu = Object:extend()
 local Main_menu = require('obj/Main_menu')
 local optionMenu= require('obj/Options')
 local startGame = require('obj/Game')
+local chooseMode = require('obj/choose_mode')
 
 local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
 
@@ -12,6 +13,9 @@ function Menu:new()
 	Main_menu:add('Options')
 	Main_menu:add('Records')
 	Main_menu:add('Exit')
+
+	chooseMode:add('One Player')
+	chooseMode:add('Two Players')
 end
 
 function Menu:update(dt)
@@ -29,6 +33,8 @@ end
 function changeMenu(menuType)
 	if menuType == 'mainMenu' then
 		current_menu = Main_menu()
+	elseif menuType == 'chooseMode' then
+		current_menu = chooseMode
 	elseif menuType == 'Options' then
 		current_menu = optionMenu
 	elseif menuType == 'Records' then
