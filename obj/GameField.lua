@@ -2,17 +2,15 @@ local GameField = Object:extend()
 local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
 local ComboFont = love.graphics.newFont('fonts/logo.ttf', h/10)
 
-scoreText = love.graphics.newText(ComboFont, '0')
-
-local over = {
-	text = love.graphics.newText(OverFont, 'Вас морально унизили'),
-	draw = false
+-- это надо перенести в класс Game
+game_over_splash_screen = {
+	bg_color = {0, 0, 0, 0},
+	text = love.graphics.newText(OverFont, 'Вы Морально Унижены'),
+	text_draw = false,
+	game_over = false
 }
 
-local game_over_window = {
-	color = {0, 0, 0, 0}
-}
-
+<<<<<<< HEAD
 
 speed = 0.5
 score = 0
@@ -33,8 +31,12 @@ end
 local types = {
 	--'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 
 	'palka'
+=======
+types = {
+	'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 'palka'
+>>>>>>> 09a9f91cddb8aafc46858ef77021da60f3ae76c7
 }
-local figures = {
+figures = {
 	left_zed = {
 		{{2,1},{2,2},{1,2},{1,3}}, -- Up
 		{{1,1},{2,1},{2,2},{3,2}} -- Left
@@ -69,127 +71,157 @@ local figures = {
 		{{1,3},{2,3},{3,3},{4,3}}
 	}
 }
---[[
-4   0
-3 0 0 0 0 
-2   
-1   0  
-  1 2 3 4
-]]--
+-- это надо перенести в класс Game
+
+function GameField:new(player_side, x, y, w, h, width, height)
+	self.player_side = player_side
+	self.x, self.y, self.w, self.h = x, y, w, h -- Координаты поля, ширина и высота игрового поля
+	self.width, self.height = width, height -- Количество кубиков в рядах и столбцах соответственоо
+
+	self.edge = self.w / self.width -- длина стороны квадрата(кубика)
+	self.score = 0
+
+	self.speed = 0.5
+
+	self.fall = 'space'
+	
+	if self.player_side == 'left' then
+		self.left, self.right, self.rotate, self.increase = 'a', 'd', 'w', 's'
+	end
+	if self.player_side == 'right' then
+		self.left, self.right, self.rotate, self.increase = 'left', 'right', 'up', 'down'
+	end
+
+	local grid = {}
+	for i = 1, self.height do
+		table.insert(grid, {})
+		for j = 1, self.width do
+			table.insert(grid[i], 0)
+		end
+	end
+	self.grid = grid
+	self:newFigure()
+end
+
+function GameField:draw()
+	love.graphics.rectangle('line', self.x, self.y, self.w, self.h)
+	self:drawPassive()
+	self:drawActive()
+
+end
+
+
 function GameField:newFigure()
+	local typef = types[love.math.random(1, #types)]
+	local pos = love.math.random(1, #figures[typef])
 
-	--typef = types[love.math.random(1,#types)] -- тип фигуры(квадрат, палка и т.д.)
-	typef = 'palka'
-	pos = love.math.random(1,#figures[typef]) -- положение(поворот, то как будет повернута фигура)
+	self.active_brick = copy(figures[typef][pos])
+	self.active_brick.pos = pos
+	self.active_brick.type = typef
+	self.active_brick.is_active = true
 
-	active_brick = copy(figures[typef][pos]) -- создание самой фигуры	
-	active_brick.pos = pos -- присваивание положения
-	active_brick.type = typef -- присваивание типа
-	active_brick.active = true
+	game_over_check(self, self.active_brick)
 
-	game_over_check(active_brick) -- проверка на окончание игры (если фигура появляется внутри другой, значит игра окончена) 
+	if not game_over_splash_screen.game_over then
+		timer:every(self.speed, function ()
+			stop = false
+			temp = copy(self.active_brick)
+			for i = 1, 4 do
+				if temp[i][2] + 1 <= height and self.grid[temp[i][2] + 1][temp[i][1]] == 0 then
+					temp[i][2] = temp[i][2] + 1
+				else
+					stop = true
+					break
+				end
+			end
 
-	timer:every(speed, function()
-		stop = false
-		temp = copy(active_brick)
-		for i=1, 4 do
-			if temp[i][2]+1 <= height and grid[temp[i][2]+1][temp[i][1]] == 0 then
-				temp[i][2] = temp[i][2]+1
-			else                      -- характер движения фигуры. Oна пaдает пока под ней не появится опора(другая "застывшая" фигура или земля(пол))
-				stop = true
-				break
+			if stop then
+				self:makePassive(self.active_brick)
+				self:newFigure()
+				return false
+			else
+				self.active_brick = copy(temp)
+			end
+		end)
+	end
+end
+
+function GameField:makePassive(ab)
+	for i = 1, 4 do
+		self.grid[ab[i][2]][ab[i][1]] = 1
+	end
+	self:clear(ab)
+end
+
+function GameField:clear(ab)
+	for i = ab[1][2], ab[4][2] do
+		full = true
+		for j = 1, width do
+			if self.grid[i][j] == 0 then
+				full = false
 			end
 		end
-
-		if stop == false then
-			active_brick = copy(temp)
-		else
-			GameField:makePassive(active_brick)
-			if in_game then GameField:newFigure() end
-			return false
-		end
-
-	end)
-end
-
--- проверка на окончание игры (если фигура появляется внутри другой, значит игра окончена) 
-function game_over_check(ab) 
-	for i = 1, 4 do
-		if grid[ab[i][2]][ab[i][1]] ~= 0 then gameOver() end
-	end
-end
-
-function GameField:new()
-	edge = Field.w/width
-	grid = {}
-	for i=1, height do
-		table.insert(grid,{})
-		for j=1, width do
-			table.insert(grid[i],0)
+		local list = {}
+		for k = 1, width do table.insert(list, 0) end
+		if full then
+			table.remove(self.grid, i)
+			table.insert(self.grid, 1, list)
+			self.score = self.score + 10
 		end
 	end
-	GameField:newFigure()
 end
 
-function copy(obj)
-  	if type(obj) ~= 'table' then return obj end
-  	local res = {}
-  	for k, v in pairs(obj) do res[copy(k)] = copy(v) end
-  	return res
-end
-
-
-function GameField:MoveActive()
-	if input:down('left', 0.1, 0.1) then
-		temp = copy(active_brick)
-		stop = false
-		for i=1,4 do
-			if temp[i][1]-1 <= 0 or grid[temp[i][2]][temp[i][1]-1] == 1 or not temp.active then
+function GameField:moveActive()
+	if input:down(self.left, 0.1, 0.1) then
+		local temp = copy(self.active_brick)
+		local stop = false
+		for i = 1, 4 do
+			if temp[i][1] - 1 <= 0 or self.grid[temp[i][2]][temp[i][1] - 1] ==1 or not temp.is_active then
 				stop = true
 				break
 			end
 			temp[i][1] = temp[i][1] - 1
 		end
-		if stop == false then active_brick = copy(temp) end
+		if not stop then self.active_brick = copy(temp) end
 	end
 
-
-	if input:down('right', 0.1, 0.1) then
-		temp = copy(active_brick)
-		stop = false
-		for i=1,4 do
-			if temp[i][1]+1 > width or grid[temp[i][2]][temp[i][1]+1] == 1 or not temp.active then
+	if input:down(self.right, 0.1, 0.1) then
+		local temp = copy(self.active_brick)
+		local stop = false
+		for i = 1, 4 do
+			if temp[i][1] + 1 > self.width or self.grid[temp[i][2]][temp[i][1] + 1] == 1 or not temp.is_active then
 				stop = true
 				break
 			end
 			temp[i][1] = temp[i][1] + 1
 		end
-		if stop == false then active_brick = copy(temp) end
-
+		if not stop then self.active_brick = copy(temp) end
 	end
 
 
-
-	if input:down('down', 0.01, 0.01) then
-		temp = copy(active_brick)
-		stop = false
-		for i=1,4 do
-			if temp[i][2]+1 > height or grid[temp[i][2]+1][temp[i][1]] == 1 or not temp.active then
+	if input:down(self.increase, 0.05, 0.05) then
+		local temp = copy(self.active_brick)
+		local stop = false
+		for i = 1, 4 do
+			if temp[i][2] + 1 > self.height or self.grid[temp[i][2] +1][temp[i][1]] == 1 or not temp.is_active then
 				stop = true
 				break
 			end
 			temp[i][2] = temp[i][2] + 1
 		end
+<<<<<<< HEAD
 		if stop == false then active_brick = copy(temp)
 		elseif temp.active then GameField:makePassive(active_brick)
 		else GameField:newFigure() end
+=======
+		if not stop then self.active_brick = copy(temp) end
+>>>>>>> 09a9f91cddb8aafc46858ef77021da60f3ae76c7
 	end
 
 
-
-	if input:down('up', 0.3, 0.3) then
-		temp = copy(active_brick)
-		for i=1, 4 do
+	if input:down(self.rotate, 0.3, 0.3) then
+		local temp = copy(self.active_brick)
+		for i = 1, 4 do
 			temp[i][1] = temp[i][1] - figures[temp.type][temp.pos][i][1]
 			temp[i][2] = temp[i][2] - figures[temp.type][temp.pos][i][2]
 		end
@@ -201,110 +233,87 @@ function GameField:MoveActive()
 			temp[i][1] = temp[i][1] + figures[temp.type][temp.pos][i][1]
 			temp[i][2] = temp[i][2] + figures[temp.type][temp.pos][i][2]
 		end
-		stop = false
-		for i=1, 4 do
-			coor = temp[i]
-			if coor[2] > height or grid[coor[2]][coor[1]] == 1 then
+		local stop = false
+
+		for i = 1, 4 do
+			local coor = temp[i]
+			if coor[2] > self.height or self.grid[coor[2]][coor[1]] == 1 then
 				stop = true
 				break
 			end
+
 			if coor[1] < 1 then
-				dif = 1 - coor[1]
-				for i=1, 4 do
+				local dif = 1 - coor[1]
+				for i = 1, 4 do
 					temp[i][1] = temp[i][1] + dif
 				end
 				break
-			elseif coor[1] > width then
-				dif = coor[1] - width
-				for i=1, 4 do
+			elseif coor[1] > self.width then
+				dif = coor[1] - self.width
+				for i = 1, 4 do
 					temp[i][1] = temp[i][1] - dif
 				end
 			end
 		end
-		if stop == false then active_brick = copy(temp) end
-	end 
+		if not stop then self.active_brick = copy(temp) end
+	end
 
-
-	if input:pressed('space') then
-		temp = copy(active_brick)
-		stop = false
-		while stop == false do
-			for i=1,4 do
-				if temp[i][2]+1 > height or grid[temp[i][2]+1][temp[i][1]] == 1 then
+	if input:pressed(self.fall) then
+		local temp = copy(self.active_brick)
+		local stop = false
+		while not stop do
+			for i = 1, 4 do
+				if temp[i][2] + 1 > self.height or self.grid[temp[i][2]+1][temp[i][1]] == 1 then
 					stop = true
 					break
 				end
 				temp[i][2] = temp[i][2] + 1
 			end
-			if stop == false then active_brick = copy(temp) end
+			if not stop then self.active_brick = copy(temp) end
 		end
-		GameField:makePassive(active_brick)
+		self:makePassive(self.active_brick)
 	end
 
 end
 
--- Эта функция очищает все заполненные слои, проверяя только те слои которые могла задеть нынешняя фигура
-combo = false
-function GameField:Clear()
-	for i = active_brick[1][2], active_brick[4][2] do
-		full = true
-		for j=1, width do
-			if grid[i][j] == 0 then
-				full = false
-				break
-			end
-		end
-		list = {}
-		for i=1, width do table.insert(list, 0) end
-		if full == true then
-			table.remove(grid, i)
-			table.insert(grid, 1, list)
-			score = score + 10
-			scoreText = love.graphics.newText(ComboFont, tostring(score))
-		end
-	end
-end
+
+
 function GameField:drawPassive()
-	for i=1, width do
-		for j=1, height do
-			if grid[j][i] == 1 then
-				love.graphics.rectangle('fill' ,First_x + edge*(i-1), Field.y + edge*(j-1), edge-1, edge-1)
+	for i=1, self.width do
+		for j=1, self.height do
+			if self.grid[j][i] == 1 then
+				love.graphics.rectangle('fill' ,self.x + self.edge*(i-1), self.y + self.edge*(j-1), self.edge-1, self.edge-1)
 			end
 		end
 	end
 end
 function GameField:drawActive()
-	if active_brick then
+	if self.active_brick.is_active then
 		for i=1, 4 do
-			love.graphics.rectangle('fill' ,First_x + edge*(active_brick[i][1]-1), Field.y + edge*(active_brick[i][2]-1), edge-1, edge-1)
+			love.graphics.rectangle('fill' ,self.x + self.edge*(self.active_brick[i][1]-1), self.y + self.edge*(self.active_brick[i][2]-1), self.edge-1, self.edge-1)
 		end
 	end
 end
 
--- эта функция заканчивает игру (splashscreen)
-function gameOver()
-	timer:tween(2, game_over_window.color, {0, 0, 0, 1}, 'in-out-linear') 
-	game_over, in_game = true, false
-	timer:after(1, function() over.draw = true end)
-end
-
-
 function GameField:update(dt)
-	if in_game then
-		GameField:MoveActive()
+	if not game_over_splash_screen.game_over then
+		self:moveActive() 
 	end
 end
 
-function GameField:draw()
-	love.graphics.rectangle('line', First_x, Field.y, Field.w, Field.h) 
-	GameField:drawActive()
-	GameField:drawPassive()
-	love.graphics.draw(scoreText, First_x + Field.w + 20, Field.y + 100)
-	love.graphics.setColor(game_over_window.color)
-	love.graphics.rectangle('fill', 0, 0, w, h)
-	love.graphics.setColor({1, 1, 1, 1})
-	if over.draw then love.graphics.draw(over.text) end
-	
+
+
+function game_over_check(field, ab)
+	for i = 1, 4 do
+		if field.grid[ab[i][2]][ab[i][1]] ~= 0 then print(1) end
+	end
+end
+
+function copy(obj)
+  	if type(obj) ~= 'table' then return obj end
+  	local res = {}
+  	for k, v in pairs(obj) do res[copy(k)] = copy(v) end
+  	return res
 end
 
 return GameField

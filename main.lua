@@ -22,6 +22,15 @@ function love.load()
 	input:bind('right', 'right')
 	input:bind('escape', 'esc')
 	input:bind('space', 'space')
+<<<<<<< HEAD
+=======
+	input:bind('a', 'a')
+	input:bind('w', 'w')
+	input:bind('s', 's')
+	input:bind('d', 'd')
+
+	timer:after(0.01, function() gotoRoom('Menu') end)
+>>>>>>> 09a9f91cddb8aafc46858ef77021da60f3ae76c7
 end
 
 function love.update(dt)
