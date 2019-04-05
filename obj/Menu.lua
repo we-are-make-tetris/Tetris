@@ -1,21 +1,16 @@
 local Menu = Object:extend()
-local Main_menu = require('obj/Main_menu')
-local optionMenu= require('obj/Options')
-local startGame = require('obj/Game')
-local chooseMode = require('obj/choose_mode')
+local main_menu = require('obj/Main_menu')
+local choose_mode = require('obj/choose_mode')
+local OptionMenu= require('obj/Options')
+local Boo = require('obj/Father of menu')
+local exit = require('obj/Exit')
 
-local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
+--local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
 
 
 function Menu:new()
-	changeMenu('mainMenu')
-	Main_menu:add('New game')
-	Main_menu:add('Options')
-	Main_menu:add('Records')
-	Main_menu:add('Exit')
-
-	chooseMode:add('One Player')
-	chooseMode:add('Two Players')
+	Boo()
+	changeMenu('main menu')
 end
 
 function Menu:update(dt)
@@ -31,16 +26,26 @@ function Menu:draw()
 end
 
 function changeMenu(menuType)
-	if menuType == 'mainMenu' then
-		current_menu = Main_menu()
-	elseif menuType == 'chooseMode' then
-		current_menu = chooseMode
+	if menuType == 'main menu' then
+		current_menu = main_menu()
+	
+	elseif menuType == 'New Game' then
+		current_menu = choose_mode()
+	
 	elseif menuType == 'Options' then
-		current_menu = optionMenu
+		current_menu = OptionMenu
+	
 	elseif menuType == 'Records' then
 
+	elseif menuType == 'One Player' then
+		gotoRoom('One Player')
+
 	elseif menuType == 'Exit' then
+		current_menu = exit()
+	
+	elseif menuType == 'Exit Yes' then
 		os.exit()
+
 	end
 end
 

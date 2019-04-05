@@ -2,8 +2,6 @@ Object = require('lib/classic/classic')
 Timer = require('lib/hump/timer')
 Input = require('lib/boipushy/Input')
 
-
-
 currentRoom = nil
 DIFFICULTY = 3
 
@@ -14,7 +12,7 @@ Menu = require('obj/Menu')
 Game = require('obj/Game')
 
 function love.load()
-
+	gotoRoom('Menu')
 	timer = Timer()
 	input = Input()
 	input:bind('return', 'click')
@@ -24,10 +22,8 @@ function love.load()
 	input:bind('right', 'right')
 	input:bind('escape', 'esc')
 	input:bind('space', 'space')
-
-
-	timer:after(0.01, function() gotoRoom('Menu') end)
 end
+
 function love.update(dt)
 	timer:update(dt)
 	if currentRoom then
@@ -41,6 +37,6 @@ function love.draw()
 	end
 end
 function gotoRoom(room)
-	if room == 'One Player' then currentRoom = Menu()
-	elseif room == 'New game' then currentRoom = Game() end
+	if room == 'Menu' then currentRoom = Menu()
+	elseif room == 'One Player' then currentRoom = Game() end
 end

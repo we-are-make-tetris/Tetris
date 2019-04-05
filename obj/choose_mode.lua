@@ -1,26 +1,23 @@
-Main_menu = require('obj/Main_menu')
-local chooseMode = Main_menu:extend()
+local chooseMode = require('obj/Main_menu'):extend()
 
-function Main_menu:new()
-	
+function chooseMode:new()
+	list = {{'One Player', 'One Player'}, {'Two Players', 'Two Players'}, {'Back', 'main menu'}}
+	for i=1, #list do
+		table.insert(list[i], w/10) --x
+		table.insert(list[i], h/2 + (i-1)*(h/20)) --y
+		table.insert(list[i], h/30)      --font
+	end
+	chooseMode:add(list)
 end
 
-function Main_menu:update(dt)
-	List[focus].text:setFont(MenuFont)
-	if input:pressed('click') then
-		changeMenu(List[focus].room)
-	end
+function chooseMode:update(dt)
+	chooseMode:handling()
+end
 
-	if input:down('down', 0.1) then
-		focus = focus + 1
-		if focus > #List then focus = 1 end
-	end
-
-	if input:down('up', 0.1) then
-		focus = focus - 1
-		if focus < 1 then focus = #List end
-	end
-	List[focus].text:setFont(ScaleFont)
+function chooseMode:draw()
+	love.graphics.setBackgroundColor(0.5, 0.2, 0.8)
+	--Main_menu:drawLogo()
+	chooseMode:drawList()
 end
 
 return chooseMode	
