@@ -7,7 +7,7 @@ function Main_menu:new()
 		table.insert(list[i], h/2 + (i-1)*(h/20)) --y
 		table.insert(list[i], h/30)      --font
 	end
-	Main_menu:add(list)
+	Main_menu:add('link', list)
 
 	Logo = love.graphics.newText(TetrisFont, 'LOL Tetris from II LOL')
 		
@@ -17,13 +17,10 @@ function Main_menu:update(dt)
 	Main_menu:handling()
 end
 
-function Main_menu:drawLogo()
-	love.graphics.draw(Logo, (w - Logo:getWidth())/2, h/5)
-end
 
 function Main_menu:draw()
 	love.graphics.setBackgroundColor(0.5, 0.2, 0.8)
-	Main_menu:drawLogo()
+	Main_menu:drawLogo(Logo)
 	Main_menu:drawList()
 end	
 

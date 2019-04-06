@@ -8,7 +8,7 @@ function chooseMode:new()
 		table.insert(list[i], h/30)      --font
 	end
 	list[3][4] = list[3][4] + h/20
-	chooseMode:add(list)
+	chooseMode:add('link',list)
 
 	Logo = love.graphics.newText(TetrisFont, 'Choose mode')
 end
@@ -17,13 +17,9 @@ function chooseMode:update(dt)
 	chooseMode:handling()
 end
 
-function chooseMode:drawLogo()
-	love.graphics.draw(Logo, (w - Logo:getWidth())/2, h/5)
-end
-
 function chooseMode:draw()
 	love.graphics.setBackgroundColor(0.5, 0.2, 0.8)
-	chooseMode:drawLogo()
+	chooseMode:drawLogo(Logo)
 	chooseMode:drawList()
 end
 

@@ -10,7 +10,7 @@ game_over_splash_screen = {
 	game_over = false
 }
 
-speed = 0.5
+
 score = 0
 
 local game_over = false
@@ -74,7 +74,7 @@ function GameField:new(player_side, x, y, w, h, width, height)
 	self.edge = self.w / self.width -- длина стороны квадрата(кубика)
 	self.score = 0
 
-	self.speed = 0.5
+	self.speed = 0.3
 
 	self.fall = 'space'
 	
