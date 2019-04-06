@@ -45,7 +45,9 @@ function changeMenu(menuType)
 	
 	elseif menuType == 'Exit Yes' then
 		os.exit()
-
+	
+	elseif menuType == 'Save' then
+		checkUpdates()
 	end
 end
 
