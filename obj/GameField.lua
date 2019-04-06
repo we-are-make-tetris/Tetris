@@ -106,8 +106,8 @@ end
 
 
 function GameField:newFigure()
-	--local typef = types[love.math.random(1, #types)]
-	local typef = 'palka'
+	local typef = types[love.math.random(1, #types)]
+	typef = 'palka'
 	local pos = love.math.random(1, #figures[typef])
 
 	self.active_brick = copy(figures[typef][pos])
@@ -118,6 +118,7 @@ function GameField:newFigure()
 	game_over_check(self, self.active_brick)
 
 	if not game_over_splash_screen.game_over then
+		if game_over_splash_screen.game_over then return false end
 		timer:every(self.speed, function ()
 			stop = false
 			temp = copy(self.active_brick)
@@ -207,9 +208,9 @@ function GameField:moveActive()
 		end
 
 		if not stop then self.active_brick = copy(temp)
-		elseif temp.is_active then self.active_brick.is_active = self:makePassive(self.active_brick)
-		else self:newFigure() end
-
+		--elseif temp.is_active then self.active_brick.is_active = self:makePassive(self.active_brick)
+		--else self:newFigure() end
+		end
 	end
 
 
@@ -265,7 +266,7 @@ function GameField:moveActive()
 			end
 			if not stop then self.active_brick = copy(temp) end
 		end
-		self.active_brick.is_active = self:makePassive(self.active_brick)
+		--self.active_brick.is_active = self:makePassive(self.active_brick)
 	end
 
 end
