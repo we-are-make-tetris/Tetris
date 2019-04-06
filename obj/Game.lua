@@ -1,18 +1,18 @@
 local Game = Object:extend()
 local game_field = require('obj/gameField')
-local game_field1= require('obj/gameField') 
+--local game_field1= require('obj/gameField') 
 
 width = 11
 height = 24
 
 function Game:new()
 	GameField1 = game_field('right', Second_x, Field.y, Field.w, Field.h, width, height)
-	GameField2 = game_field1('left', First_x, Field.y, Field.w, Field.h, width, height)
+	--GameField2 = game_field('left', First_x, Field.y, Field.w, Field.h, width, height)
 end
 
 function Game:update(dt)
 	GameField1:update(dt)
-	GameField2:update(dt)
+	--GameField2:update(dt)
 end
 
 
@@ -32,7 +32,7 @@ function Game:draw()
 	love.graphics.setBackgroundColor(0.6, 0.8, 0)
 
 	GameField1:draw()
-	GameField2:draw()
+	--GameField2:draw()
 
 	--love.graphics.draw(nextText, 150, 675)
 end
