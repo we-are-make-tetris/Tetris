@@ -3,6 +3,9 @@ local game_field = require('obj/gameField')
 --local game_field1= require('obj/gameField') 
 
 
+local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
+local ComboFont = love.graphics.newFont('fonts/logo.ttf', h/10)
+local nextFont = love.graphics.newFont('fonts/logo.ttf', h/30)
 
 game_over_splash_screen = {
 	bg_color = {0, 0, 0, 0},
@@ -51,6 +54,19 @@ figures = {
 	}
 }
 
+NEXT_TEXT = love.graphics.newText(nextFont, 'Next')
+
+COLORS = {
+	{1, 1, 1, 1},
+	{0, 0, 0, 1},
+	{1, 0, 0, 1},
+	{0, 1, 0, 1},
+	{0, 0, 1, 1},
+	{1, 1, 0, 1},
+	{1, 0.4, 0.05, 1},
+	{1, 0.5, 1, 1}
+}
+
 width = 11
 height = 24
 
@@ -75,7 +91,7 @@ if Field.h + h/10 > h then
 	Field.w = Field.h/height*width
 end
 First_x = w/20
-Second_x = First_x + w/2 
+Second_x = First_x + w/4 
 
 function Game:draw()
 	love.graphics.setBackgroundColor(0.6, 0.8, 0)
