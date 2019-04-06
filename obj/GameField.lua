@@ -5,7 +5,8 @@ local ComboFont = love.graphics.newFont('fonts/logo.ttf', h/10)
 -- это надо перенести в класс Game
 game_over_splash_screen = {
 	bg_color = {0, 0, 0, 0},
-	text = love.graphics.newText(OverFont, 'Вы Морально Унижены'),
+	censore = {false, {0, 0, 0, 1}},
+	text = love.graphics.newText(OverFont, 'Вас Морально Унизили'),
 	text_draw = false,
 	game_over = false
 }
@@ -92,7 +93,22 @@ function GameField:draw()
 	love.graphics.rectangle('line', self.x, self.y, self.w, self.h)
 	self:drawPassive()
 	self:drawActive()
+	love.graphics.draw(getScore(self.score), self.x + self.w + 10, self.y + self.h/10)
+	love.graphics.setColor(game_over_splash_screen.bg_color)
+	love.graphics.rectangle('fill', 0, 0, w, h)
+	love.graphics.setColor(1, 1, 1 ,1)
+	if game_over_splash_screen.text_draw then
+		love.graphics.draw(game_over_splash_screen.text, w/2 - 125, h/2 - 25)
+	end
+	if game_over_splash_screen.censore[1] then
+		love.graphics.setColor(game_over_splash_screen.censore[2])
+		love.graphics.rectangle('fill', w/2 - 125, h/2 - 25, 250, 50)
+		love.graphics.setColor(1, 1, 1, 1)
+	end
+end
 
+function getScore(score)
+	return love.graphics.newText(ComboFont, tostring(score))
 end
 
 -- "омертвляет фигуру", делает пассивной.
@@ -151,6 +167,7 @@ function GameField:makePassive(ab)
 end
 
 function GameField:clear(ab)
+	local combo = 0
 	for i = ab[1][2], ab[4][2] do
 		full = true
 		for j = 1, width do
@@ -161,9 +178,10 @@ function GameField:clear(ab)
 		local list = {}
 		for k = 1, width do table.insert(list, 0) end
 		if full then
+			combo = combo +1
 			table.remove(self.grid, i)
 			table.insert(self.grid, 1, list)
-			self.score = self.score + 10
+			self.score = self.score + 10 * combo 
 		end
 	end
 end
@@ -300,8 +318,22 @@ end
 
 function game_over_check(field, ab)
 	for i = 1, 4 do
-		if field.grid[ab[i][2]][ab[i][1]] ~= 0 then game_over_splash_screen.game_over = true end
+		if field.grid[ab[i][2]][ab[i][1]] ~= 0 then gameOver() end
 	end
+end
+
+function gameOver()
+	timer:after(2.3, function()
+	 game_over_splash_screen.censore[1] = true 
+	 game_over_splash_screen.text_draw = true
+	end)
+	
+	game_over_splash_screen.game_over = true
+	timer:after(2.5, function()
+		timer:tween(1.5, game_over_splash_screen.censore[2], {0, 0, 0, 0}, 'linear')
+		
+	end)
+	timer:tween(2.2, game_over_splash_screen.bg_color, {0, 0, 0, 1}, 'linear')
 end
 
 function copy(obj)
