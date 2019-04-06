@@ -10,8 +10,6 @@ game_over_splash_screen = {
 	game_over = false
 }
 
-<<<<<<< HEAD
-
 speed = 0.5
 score = 0
 
@@ -28,13 +26,8 @@ function GameField:makePassive(t)
 	GameField:Clear()
 end
 
-local types = {
-	--'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 
-	'palka'
-=======
 types = {
 	'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 'palka'
->>>>>>> 09a9f91cddb8aafc46858ef77021da60f3ae76c7
 }
 figures = {
 	left_zed = {
@@ -209,13 +202,13 @@ function GameField:moveActive()
 			end
 			temp[i][2] = temp[i][2] + 1
 		end
-<<<<<<< HEAD
+
 		if stop == false then active_brick = copy(temp)
 		elseif temp.active then GameField:makePassive(active_brick)
 		else GameField:newFigure() end
-=======
+
 		if not stop then self.active_brick = copy(temp) end
->>>>>>> 09a9f91cddb8aafc46858ef77021da60f3ae76c7
+
 	end
 
 
