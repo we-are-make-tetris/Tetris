@@ -7,7 +7,8 @@ function Main_menu:new()
 		table.insert(list[i], h/2 + (i-1)*(h/20)) --y
 		table.insert(list[i], h/30)      --font
 	end
-	Main_menu:add('link', list)
+	Main_menu:add()
+	Main_menu:addLink(list)
 
 	Logo = love.graphics.newText(TetrisFont, 'LOL Tetris from II LOL')
 		

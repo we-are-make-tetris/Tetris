@@ -65,8 +65,13 @@ end
 
 
 function GameField:newFigure()
+<<<<<<< HEAD
+	--local typef = types[love.math.random(1, #types)]
+	local typef = types[love.math.random(1, #types)]
+=======
 	local typef = types[love.math.random(1, #types)]
 	typef = 'palka'
+>>>>>>> 6d3bde0b11e2d891641c65d953c527b51455239b
 	local pos = love.math.random(1, #figures[typef])
 
 	self.active_brick = copy(figures[typef][pos])

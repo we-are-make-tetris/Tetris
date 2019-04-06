@@ -8,7 +8,8 @@ function chooseMode:new()
 		table.insert(list[i], h/30)      --font
 	end
 	list[3][4] = list[3][4] + h/20
-	chooseMode:add('link',list)
+	chooseMode:add()
+	chooseMode:addLink(list)
 
 	Logo = love.graphics.newText(TetrisFont, 'Choose mode')
 end

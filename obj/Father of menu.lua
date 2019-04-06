@@ -2,8 +2,6 @@ local Boo = Object:extend()
 
 function Boo:add(typef, list)
 	List = {}
-	if typef == 'link' then Boo:addLink(list)
-	elseif typef == 'switcher' then Boo:addSwitcher(list) end
 end
 
 function Boo:addLink(list)
@@ -36,6 +34,7 @@ function Boo:addSwitcher(list)
 		ScaleFont = love.graphics.newFont('fonts/logo.ttf', font*scale)
 		TetrisFont = love.graphics.newFont('fonts/logo.ttf', h/10)
 		table.insert(List, {
+			sign = name,
 			name = love.graphics.newText(MenuFont, name),
 			choose_list = {},
 			type = 'switcher',
@@ -45,11 +44,11 @@ function Boo:addSwitcher(list)
 			font = font
 		})
 		for i=1, #choose_list do
-			table.insert(List[#List].choose_list,{text = love.graphics.newText(MenuFont, choose_list[i]), scaletext = love.graphics.newText(ScaleFont, List[#List].choose_list[i])})
+			table.insert(List[#List].choose_list,{sign = choose_list[i], text = love.graphics.newText(MenuFont, choose_list[i]), scaletext = love.graphics.newText(ScaleFont, choose_list[i])})
 			now = List[#List].choose_list[#List[#List].choose_list]
-			now.switch_x = List[#List].x + List[#List].name:getWidth()
+			now.switch_x = List[#List].x + w/30 + List[#List].name:getWidth()
 			now.switch_y = y
-			now.big_x = now.switch_x  - (now.scaletext:getWidth()-now.text:getWidth())/2
+			now.big_x = now.switch_x - (now.scaletext:getWidth()-now.text:getWidth())/2
 			now.big_y = now.switch_y - (now.scaletext:getHeight()-now.text:getHeight())/2
 		end
 
