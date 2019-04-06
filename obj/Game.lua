@@ -2,6 +2,55 @@ local Game = Object:extend()
 local game_field = require('obj/gameField')
 --local game_field1= require('obj/gameField') 
 
+
+
+game_over_splash_screen = {
+	bg_color = {0, 0, 0, 0},
+	censore = {false, {0, 0, 0, 1}},
+	text = love.graphics.newText(OverFont, 'Вас Морально Унизили'),
+	text_draw = false,
+	game_over = false
+}
+
+types = {
+	'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 'palka'
+}
+figures = {
+	left_zed = {
+		{{2,1},{2,2},{1,2},{1,3}}, -- Up
+		{{1,1},{2,1},{2,2},{3,2}} -- Left
+	},
+	right_zed = {
+		{{1,1},{1,2},{2,2},{2,3}}, -- Up
+		{{2,1},{1,2},{3,1},{2,2}} -- Left
+	},
+	T = {
+		{{2,1},{1,2},{2,2},{2,3}},  --left
+		{{2,1},{1,2},{3,2},{2,2}}, --down
+		{{2,1},{2,2},{3,2},{2,3}}, --right
+		{{1,1},{2,1},{3,1},{2,2}} --up
+	},
+	cube = {
+		{{1,1},{1,2},{2,1},{2,2}}
+	},
+	left_ugol = {
+		{{3,1},{1,2},{2,2},{3,2}},
+		{{2,1},{2,2},{2,3},{3,3}},
+		{{2,2},{1,2},{3,2},{1,3}},
+		{{1,1},{2,1},{2,2},{2,3}}
+	},
+	right_ugol = {
+		{{1,2},{2,2},{3,2},{3,3}},
+		{{2,1},{1,3},{2,2},{2,3}},
+		{{1,1},{1,2},{2,2},{3,2}},
+		{{3,1},{2,1},{2,2},{2,3}}
+	},
+	palka = {
+		{{2,1},{2,3},{2,2},{2,4}},
+		{{1,3},{2,3},{3,3},{4,3}}
+	}
+}
+
 width = 11
 height = 24
 

@@ -2,63 +2,6 @@ local GameField = Object:extend()
 local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
 local ComboFont = love.graphics.newFont('fonts/logo.ttf', h/10)
 
--- это надо перенести в класс Game
-game_over_splash_screen = {
-	bg_color = {0, 0, 0, 0},
-	censore = {false, {0, 0, 0, 1}},
-	text = love.graphics.newText(OverFont, 'Вас Морально Унизили'),
-	text_draw = false,
-	game_over = false
-}
-
-
-score = 0
-
-local game_over = false
-local in_game = true
-
-
-
-types = {
-	'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 'palka'
-}
-figures = {
-	left_zed = {
-		{{2,1},{2,2},{1,2},{1,3}}, -- Up
-		{{1,1},{2,1},{2,2},{3,2}} -- Left
-	},
-	right_zed = {
-		{{1,1},{1,2},{2,2},{2,3}}, -- Up
-		{{2,1},{1,2},{3,1},{2,2}} -- Left
-	},
-	T = {
-		{{2,1},{1,2},{2,2},{2,3}},  --left
-		{{2,1},{1,2},{3,2},{2,2}}, --down
-		{{2,1},{2,2},{3,2},{2,3}}, --right
-		{{1,1},{2,1},{3,1},{2,2}} --up
-	},
-	cube = {
-		{{1,1},{1,2},{2,1},{2,2}}
-	},
-	left_ugol = {
-		{{3,1},{1,2},{2,2},{3,2}},
-		{{2,1},{2,2},{2,3},{3,3}},
-		{{2,2},{1,2},{3,2},{1,3}},
-		{{1,1},{2,1},{2,2},{2,3}}
-	},
-	right_ugol = {
-		{{1,2},{2,2},{3,2},{3,3}},
-		{{2,1},{1,3},{2,2},{2,3}},
-		{{1,1},{1,2},{2,2},{3,2}},
-		{{3,1},{2,1},{2,2},{2,3}}
-	},
-	palka = {
-		{{2,1},{2,3},{2,2},{2,4}},
-		{{1,3},{2,3},{3,3},{4,3}}
-	}
-}
--- это надо перенести в класс Game
-
 function GameField:new(player_side, x, y, w, h, width, height)
 	self.player_side = player_side
 	self.x, self.y, self.w, self.h = x, y, w, h -- Координаты поля, ширина и высота игрового поля
