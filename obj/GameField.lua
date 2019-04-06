@@ -16,15 +16,7 @@ score = 0
 local game_over = false
 local in_game = true
 
--- "омертвляет фигуру", делает пассивной.
 
-function GameField:makePassive(t)
-	for i=1, 4 do
-		grid[t[i][2]][t[i][1]]=1
-	end
-	t.active = false
-	GameField:Clear()
-end
 
 types = {
 	'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 'palka'
@@ -103,9 +95,19 @@ function GameField:draw()
 
 end
 
+-- "омертвляет фигуру", делает пассивной.
+function GameField:makePassive(t)
+	t.is_active = false
+	for i=1, 4 do
+		self.grid[t[i][2]][t[i][1]]=1
+	end
+	self:Clear(t)
+end
+
 
 function GameField:newFigure()
-	local typef = types[love.math.random(1, #types)]
+	--local typef = types[love.math.random(1, #types)]
+	local typef = 'palka'
 	local pos = love.math.random(1, #figures[typef])
 
 	self.active_brick = copy(figures[typef][pos])
@@ -129,7 +131,7 @@ function GameField:newFigure()
 			end
 
 			if stop then
-				self:makePassive(self.active_brick)
+				self.active_brick.is_active = self:makePassive(self.active_brick)
 				self:newFigure()
 				return false
 			else
@@ -144,6 +146,7 @@ function GameField:makePassive(ab)
 		self.grid[ab[i][2]][ab[i][1]] = 1
 	end
 	self:clear(ab)
+	return false
 end
 
 function GameField:clear(ab)
@@ -196,18 +199,16 @@ function GameField:moveActive()
 		local temp = copy(self.active_brick)
 		local stop = false
 		for i = 1, 4 do
-			if temp[i][2] + 1 > self.height or self.grid[temp[i][2] +1][temp[i][1]] == 1 or not temp.is_active then
+			if temp[i][2] + 1 > self.height or self.grid[temp[i][2] + 1][temp[i][1]] == 1 or not temp.is_active then
 				stop = true
 				break
 			end
 			temp[i][2] = temp[i][2] + 1
 		end
 
-		if stop == false then active_brick = copy(temp)
-		elseif temp.active then GameField:makePassive(active_brick)
-		else GameField:newFigure() end
-
-		if not stop then self.active_brick = copy(temp) end
+		if not stop then self.active_brick = copy(temp)
+		elseif temp.is_active then self.active_brick.is_active = self:makePassive(self.active_brick)
+		else self:newFigure() end
 
 	end
 
@@ -242,7 +243,7 @@ function GameField:moveActive()
 				end
 				break
 			elseif coor[1] > self.width then
-				dif = coor[1] - self.width
+				local dif = coor[1] - self.width
 				for i = 1, 4 do
 					temp[i][1] = temp[i][1] - dif
 				end
@@ -264,7 +265,7 @@ function GameField:moveActive()
 			end
 			if not stop then self.active_brick = copy(temp) end
 		end
-		self:makePassive(self.active_brick)
+		self.active_brick.is_active = self:makePassive(self.active_brick)
 	end
 
 end
@@ -298,7 +299,7 @@ end
 
 function game_over_check(field, ab)
 	for i = 1, 4 do
-		if field.grid[ab[i][2]][ab[i][1]] ~= 0 then print(1) end
+		if field.grid[ab[i][2]][ab[i][1]] ~= 0 then game_over_splash_screen.game_over = true end
 	end
 end
 
