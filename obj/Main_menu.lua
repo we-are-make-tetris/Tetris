@@ -9,12 +9,8 @@ function Main_menu:new()
 	end
 	Main_menu:add(list)
 
-	TetrisFont = love.graphics.newFont('fonts/logo.ttf', h/10)
-	logo = {
-		Logo = love.graphics.newText(TetrisFont, 'LOL Tetris from II LOL'),
-		y = h/5
-	}
-	logo.x = (w - logo.Logo:getWidth())/2
+	Logo = love.graphics.newText(TetrisFont, 'LOL Tetris from II LOL')
+		
 end
 
 function Main_menu:update(dt)
@@ -22,7 +18,7 @@ function Main_menu:update(dt)
 end
 
 function Main_menu:drawLogo()
-	love.graphics.draw(logo.Logo, logo.x, logo.y)
+	love.graphics.draw(Logo, (w - Logo:getWidth())/2, h/5)
 end
 
 function Main_menu:draw()

@@ -7,6 +7,7 @@ function Boo:add(list)
 		interval = Listh / #list
 		MenuFont = love.graphics.newFont('fonts/logo.ttf', font)
 		ScaleFont = love.graphics.newFont('fonts/logo.ttf', font*scale)
+		TetrisFont = love.graphics.newFont('fonts/logo.ttf', h/10)
 		table.insert(List, {
 			text = love.graphics.newText(MenuFont, name),
 			scaletext = love.graphics.newText(ScaleFont, name),
@@ -44,6 +45,7 @@ end
 
 function Boo:handling()
 	if input:pressed('click') then changeMenu(List[focus].room) end
+	if input:pressed('esc') then changeMenu('main menu') end
 	if input:down('down', 0.1, 0.2) or input:down('left', 0.1, 0.2) then
 		focus = focus + 1
 		if focus > #List then focus = 1 end
