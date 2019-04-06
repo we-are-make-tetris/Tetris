@@ -1,7 +1,7 @@
 local Menu = Object:extend()
 local main_menu = require('obj/Main_menu')
 local choose_mode = require('obj/choose_mode')
-local OptionMenu= require('obj/Options')
+local options_menu = require('obj/Options')
 local Boo = require('obj/Father of menu')
 local exit = require('obj/Exit')
 
@@ -33,7 +33,7 @@ function changeMenu(menuType)
 		current_menu = choose_mode()
 	
 	elseif menuType == 'Options' then
-		current_menu = OptionMenu
+		current_menu = options_menu()
 	
 	elseif menuType == 'Records' then
 
