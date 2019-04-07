@@ -51,7 +51,7 @@ function GameField:draw()
 	end
 	if game_over_splash_screen.censore[1] then
 		love.graphics.setColor(game_over_splash_screen.censore[2])
-		love.graphics.rectangle('fill', w/2 - 125, h/2 - 25, 250, 50)
+		love.graphics.rectangle('fill', w/2 - 125, h/2 - 25, w/2, 50)
 		love.graphics.setColor(1, 1, 1, 1)
 	end
 end
@@ -287,7 +287,10 @@ function gameOver()
 	game_over_splash_screen.game_over = true
 	timer:after(2.5, function()
 		timer:tween(1.5, game_over_splash_screen.censore[2], {0, 0, 0, 0}, 'linear')
-		
+		timer:after(5, function()
+			timer:tween(1, game_over_splash_screen.censore[2], {0, 0, 0, 1}, 'linear')
+			timer:after(1.3, function() gotoRoom('Menu') end)
+		end)
 	end)
 	timer:tween(2.2, game_over_splash_screen.bg_color, {0, 0, 0, 1}, 'linear')
 end

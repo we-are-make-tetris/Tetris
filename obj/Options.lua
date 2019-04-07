@@ -35,6 +35,7 @@ function checkUpdates()
 			end
 		end
 	end
+	w, h = love.graphics.getWidth(), love.graphics.getHeight()
 end
 
 return Options

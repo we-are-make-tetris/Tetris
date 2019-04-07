@@ -1,9 +1,8 @@
 local Game = Object:extend()
-local game_field = require('obj/gameField')
 --local game_field1= require('obj/gameField') 
 
 
-local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
+local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/20)
 local ComboFont = love.graphics.newFont('fonts/logo.ttf', h/10)
 local nextFont = love.graphics.newFont('fonts/logo.ttf', h/30)
 
@@ -70,14 +69,26 @@ COLORS = {
 width = 11
 height = 24
 
-function Game:new()
-	GameField1 = game_field('right', Second_x, Field.y, Field.w, Field.h, width, height)
-	--GameField2 = game_field('left', First_x, Field.y, Field.w, Field.h, width, height)
+function Game:new(player_count)
+	local game_field = require('obj/gameField')
+	game_over_splash_screen = {
+		bg_color = {0, 0, 0, 0},
+		censore = {false, {0, 0, 0, 1}},
+		text = love.graphics.newText(OverFont, 'Вас Морально Унизили'),
+		text_draw = false,
+		game_over = false
+	}
+	if player_count == 1 then
+		GameField1 = game_field('right', Second_x, Field.y, Field.w, Field.h, width, height)
+	elseif player_count == 2 then
+		GameField1 = game_field('left', First_x, Field.y, Field.w, Field.h, width, height)
+		GameField2 = game_field('right', Second_x, Field.y, Field.w, Field.h, width, height)
+	end
 end
 
 function Game:update(dt)
 	GameField1:update(dt)
-	--GameField2:update(dt)
+	if GameField2 then GameField2:update(dt) end
 end
 
 
@@ -91,13 +102,13 @@ if Field.h + h/10 > h then
 	Field.w = Field.h/height*width
 end
 First_x = w/20
-Second_x = First_x + w/4 
+Second_x = First_x + w/2 
 
 function Game:draw()
 	love.graphics.setBackgroundColor(0.6, 0.8, 0)
 
 	GameField1:draw()
-	--GameField2:draw()
+	if GameField2 then GameField2:draw() end
 
 	--love.graphics.draw(nextText, 150, 675)
 end

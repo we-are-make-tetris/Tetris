@@ -10,7 +10,7 @@ function Main_menu:new()
 	Main_menu:add()
 	Main_menu:addLink(list)
 
-	Logo = love.graphics.newText(TetrisFont, 'LOL Tetris from II LOL')
+	Logo = love.graphics.newText(TetrisFont, 'Tetris from II')
 		
 end
 
