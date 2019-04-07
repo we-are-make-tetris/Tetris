@@ -3,7 +3,7 @@ local Options = require('obj/Father of menu'):extend()
 function Options:new()
 	Options:add()
 	Options:addSwitcher({
-		{'Fullscreen :', {'No', 'Yes'}, w/10, h/2, h/30},
+		--{'Fullscreen :', {'No', 'Yes'}, w/10, h/2, h/30},
 		
 		--{'Control :', {'ho', 'oh', 'lol'}, w/10, h/2 + h/20, h/30}
 	})
