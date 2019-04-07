@@ -37,8 +37,12 @@ function changeMenu(menuType)
 	
 	elseif menuType == 'Records' then
 
+
 	elseif menuType == 'One Player' then
 		gotoRoom('One Player')
+
+	elseif menuType == 'Two Players' then
+		gotoRoom('Two Players')
 
 	elseif menuType == 'Exit' then
 		current_menu = exit()

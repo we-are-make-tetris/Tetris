@@ -1,63 +1,7 @@
 local GameField = Object:extend()
 local OverFont = love.graphics.newFont('fonts/GameOver.otf', h/30)
 local ComboFont = love.graphics.newFont('fonts/logo.ttf', h/10)
-
--- это надо перенести в класс Game
-game_over_splash_screen = {
-	bg_color = {0, 0, 0, 0},
-	censore = {false, {0, 0, 0, 1}},
-	text = love.graphics.newText(OverFont, 'Вас Морально Унизили'),
-	text_draw = false,
-	game_over = false
-}
-
-
-score = 0
-
-local game_over = false
-local in_game = true
-
-
-
-types = {
-	'left_zed', 'right_zed', 'T', 'cube', 'left_ugol', 'right_ugol', 'palka'
-}
-figures = {
-	left_zed = {
-		{{2,1},{2,2},{1,2},{1,3}}, -- Up
-		{{1,1},{2,1},{2,2},{3,2}} -- Left
-	},
-	right_zed = {
-		{{1,1},{1,2},{2,2},{2,3}}, -- Up
-		{{2,1},{1,2},{3,1},{2,2}} -- Left
-	},
-	T = {
-		{{2,1},{1,2},{2,2},{2,3}},  --left
-		{{2,1},{1,2},{3,2},{2,2}}, --down
-		{{2,1},{2,2},{3,2},{2,3}}, --right
-		{{1,1},{2,1},{3,1},{2,2}} --up
-	},
-	cube = {
-		{{1,1},{1,2},{2,1},{2,2}}
-	},
-	left_ugol = {
-		{{3,1},{1,2},{2,2},{3,2}},
-		{{2,1},{2,2},{2,3},{3,3}},
-		{{2,2},{1,2},{3,2},{1,3}},
-		{{1,1},{2,1},{2,2},{2,3}}
-	},
-	right_ugol = {
-		{{1,2},{2,2},{3,2},{3,3}},
-		{{2,1},{1,3},{2,2},{2,3}},
-		{{1,1},{1,2},{2,2},{3,2}},
-		{{3,1},{2,1},{2,2},{2,3}}
-	},
-	palka = {
-		{{2,1},{2,3},{2,2},{2,4}},
-		{{1,3},{2,3},{3,3},{4,3}}
-	}
-}
--- это надо перенести в класс Game
+local nextFont = love.graphics.newFont('fonts/logo.ttf', h/30)
 
 function GameField:new(player_side, x, y, w, h, width, height)
 	self.player_side = player_side
@@ -68,6 +12,8 @@ function GameField:new(player_side, x, y, w, h, width, height)
 	self.score = 0
 
 	self.speed = 0.3
+
+	self.next = copy(newRandom())
 
 	self.fall = 'space'
 	
@@ -91,8 +37,11 @@ end
 
 function GameField:draw()
 	love.graphics.rectangle('line', self.x, self.y, self.w, self.h)
+	love.graphics.rectangle('line', self.x + self.edge * (self.width + 2), self.y + self.edge * (self.height - 4), self.edge * 4, self.edge * 4)
+	love.graphics.draw(NEXT_TEXT, self.x + self.edge * (self.width + 2), self.y + self.edge * (self.height - 6))
 	self:drawPassive()
 	self:drawActive()
+	self:drawNext(self.x + self.edge * (self.width + 2), self.y + self.edge * (self.height - 4))
 	love.graphics.draw(getScore(self.score), self.x + self.w + 10, self.y + self.h/10)
 	love.graphics.setColor(game_over_splash_screen.bg_color)
 	love.graphics.rectangle('fill', 0, 0, w, h)
@@ -102,7 +51,7 @@ function GameField:draw()
 	end
 	if game_over_splash_screen.censore[1] then
 		love.graphics.setColor(game_over_splash_screen.censore[2])
-		love.graphics.rectangle('fill', w/2 - 125, h/2 - 25, 250, 50)
+		love.graphics.rectangle('fill', w/2 - 125, h/2 - 25, w/2, 50)
 		love.graphics.setColor(1, 1, 1, 1)
 	end
 end
@@ -122,6 +71,7 @@ end
 
 
 function GameField:newFigure()
+<<<<<<< HEAD
 	local typef = types[love.math.random(1, #types)]
 
 	local pos = love.math.random(1, #figures[typef])
@@ -130,6 +80,10 @@ function GameField:newFigure()
 	self.active_brick.pos = pos
 	self.active_brick.type = typef
 	self.active_brick.is_active = true
+=======
+	self.active_brick = copy(self.next)
+	self.next = copy(newRandom())
+>>>>>>> fa02163f960dc4c3038652ec1b5ad84049e228b2
 
 	game_over_check(self, self.active_brick)
 
@@ -160,7 +114,7 @@ end
 
 function GameField:makePassive(ab)
 	for i = 1, 4 do
-		self.grid[ab[i][2]][ab[i][1]] = 1
+		self.grid[ab[i][2]][ab[i][1]] = ab.color
 	end
 	self:clear(ab)
 	return false
@@ -191,7 +145,7 @@ function GameField:moveActive()
 		local temp = copy(self.active_brick)
 		local stop = false
 		for i = 1, 4 do
-			if temp[i][1] - 1 <= 0 or self.grid[temp[i][2]][temp[i][1] - 1] ==1 or not temp.is_active then
+			if temp[i][1] - 1 <= 0 or self.grid[temp[i][2]][temp[i][1] - 1] ~= 0 or not temp.is_active then
 				stop = true
 				break
 			end
@@ -204,7 +158,7 @@ function GameField:moveActive()
 		local temp = copy(self.active_brick)
 		local stop = false
 		for i = 1, 4 do
-			if temp[i][1] + 1 > self.width or self.grid[temp[i][2]][temp[i][1] + 1] == 1 or not temp.is_active then
+			if temp[i][1] + 1 > self.width or self.grid[temp[i][2]][temp[i][1] + 1] ~= 0 or not temp.is_active then
 				stop = true
 				break
 			end
@@ -218,7 +172,7 @@ function GameField:moveActive()
 		local temp = copy(self.active_brick)
 		local stop = false
 		for i = 1, 4 do
-			if temp[i][2] + 1 > self.height or self.grid[temp[i][2] + 1][temp[i][1]] == 1 or not temp.is_active then
+			if temp[i][2] + 1 > self.height or self.grid[temp[i][2] + 1][temp[i][1]] ~= 0 or not temp.is_active then
 				stop = true
 				break
 			end
@@ -250,7 +204,7 @@ function GameField:moveActive()
 
 		for i = 1, 4 do
 			local coor = temp[i]
-			if coor[2] > self.height or self.grid[coor[2]][coor[1]] == 1 then
+			if coor[2] > self.height or self.grid[coor[2]][coor[1]] ~= 0 then
 				stop = true
 				break
 			end
@@ -276,7 +230,7 @@ function GameField:moveActive()
 		local stop = false
 		while not stop do
 			for i = 1, 4 do
-				if temp[i][2] + 1 > self.height or self.grid[temp[i][2]+1][temp[i][1]] == 1 then
+				if temp[i][2] + 1 > self.height or self.grid[temp[i][2]+1][temp[i][1]] ~= 0 then
 					stop = true
 					break
 				end
@@ -294,8 +248,12 @@ end
 function GameField:drawPassive()
 	for i=1, self.width do
 		for j=1, self.height do
-			if self.grid[j][i] == 1 then
+			if self.grid[j][i] ~= 0 then
+				love.graphics.setColor(COLORS[self.grid[j][i]])
 				love.graphics.rectangle('fill' ,self.x + self.edge*(i-1), self.y + self.edge*(j-1), self.edge-1, self.edge-1)
+				love.graphics.setColor(COLORS[1])
+			else
+				love.graphics.rectangle('line' ,self.x + self.edge*(i-1), self.y + self.edge*(j-1), self.edge-2, self.edge-2)
 			end
 		end
 	end
@@ -303,8 +261,17 @@ end
 function GameField:drawActive()
 	if self.active_brick.is_active then
 		for i=1, 4 do
+			love.graphics.setColor(COLORS[self.active_brick.color])
 			love.graphics.rectangle('fill' ,self.x + self.edge*(self.active_brick[i][1]-1), self.y + self.edge*(self.active_brick[i][2]-1), self.edge-1, self.edge-1)
+			love.graphics.setColor(COLORS[1])
 		end
+	end
+end
+function GameField:drawNext(x, y)
+	for i = 1, 4 do
+		love.graphics.setColor(COLORS[self.next.color])
+		love.graphics.rectangle('fill', x + self.edge * (self.next[i][2]-1), y + self.edge * (self.next[i][1]-1), self.edge, self.edge)
+		love.graphics.setColor(COLORS[1])
 	end
 end
 
@@ -331,7 +298,10 @@ function gameOver()
 	game_over_splash_screen.game_over = true
 	timer:after(2.5, function()
 		timer:tween(1.5, game_over_splash_screen.censore[2], {0, 0, 0, 0}, 'linear')
-		
+		timer:after(5, function()
+			timer:tween(1, game_over_splash_screen.censore[2], {0, 0, 0, 1}, 'linear')
+			timer:after(1.3, function() gotoRoom('Menu') end)
+		end)
 	end)
 	timer:tween(2.2, game_over_splash_screen.bg_color, {0, 0, 0, 1}, 'linear')
 end
@@ -341,6 +311,21 @@ function copy(obj)
   	local res = {}
   	for k, v in pairs(obj) do res[copy(k)] = copy(v) end
   	return res
+end
+
+function newRandom()
+	local n = {}
+
+	local typef = types[love.math.random(1, #types)]
+	--typef = 'palka'
+	local pos = love.math.random(1, #figures[typef])
+
+	n = copy(figures[typef][pos])
+	n.pos = pos
+	n.type = typef
+	n.color = love.math.random(3, 8)
+	n.is_active = true
+	return n
 end
 
 return GameField
